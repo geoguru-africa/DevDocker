@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  
+  <!-- Local repository location -->
+  <localRepository>/root/.m2/repository</localRepository>
+  
+  <!-- Offline mode (set to true to use only cached dependencies) -->
+  <offline>false</offline>
+  
+  <!-- Mirrors configuration (for classroom mode or custom Maven proxies) -->
+  <mirrors>
+    <!-- Host repository mirror (if mounted, checked first after local repo) -->
+    <!-- This is configured dynamically by entrypoint.sh if /root/.m2/repository-host exists -->
+    
+    <!-- Classroom/presenter mirror (if MAVEN_MIRROR_URL is set, checked second) -->
+    <!-- This is configured dynamically by entrypoint.sh if MAVEN_MIRROR_URL env var is set -->
+    
+    <!-- Maven Central is the final fallback (always available) -->
+  </mirrors>
+  
+  <!-- Profiles -->
+  <profiles>
+    <profile>
+      <id>devdocker</id>
+      <properties>
+        <!-- Skip tests by default for faster builds -->
+        <skipTests>true</skipTests>
+        
+        <!-- Compiler settings -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        
+        <!-- Parallel build threads (1 thread per CPU core) -->
+        <maven.build.threads>1C</maven.build.threads>
+      </properties>
+      
+      <!-- Repository configuration -->
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        
+        <!-- OSGeo repository for GeoServer dependencies -->
+        <repository>
+          <id>osgeo</id>
+          <name>OSGeo Release Repository</name>
+          <url>https://repo.osgeo.org/repository/release/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        
+        <!-- OSGeo snapshots (optional, for development) -->
+        <repository>
+          <id>osgeo-snapshots</id>
+          <name>OSGeo Snapshot Repository</name>
+          <url>https://repo.osgeo.org/repository/snapshot/</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>daily</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+      
+      <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+  
+  <!-- Active profiles -->
+  <activeProfiles>
+    <activeProfile>devdocker</activeProfile>
+  </activeProfiles>
+  
+</settings>

@@ -1,0 +1,40 @@
+# SSH Server Configuration for GeoServer DevDocker
+# Optimized for IDE connectivity with security best practices
+
+# Port and protocol
+Port 22
+Protocol 2
+
+# Authentication
+PubkeyAuthentication yes
+PasswordAuthentication no
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+
+# Root login (required for container environment)
+PermitRootLogin prohibit-password
+
+# Key-based authentication settings
+AuthorizedKeysFile .ssh/authorized_keys
+
+# Disable unused authentication methods
+KerberosAuthentication no
+GSSAPIAuthentication no
+
+# Security settings
+X11Forwarding yes
+PrintMotd no
+PrintLastLog yes
+TCPKeepAlive yes
+PermitUserEnvironment no
+
+# Logging
+SyslogFacility AUTH
+LogLevel INFO
+
+# Session settings
+UsePAM yes
+AcceptEnv LANG LC_*
+
+# Subsystems
+Subsystem sftp /usr/lib/openssh/sftp-server

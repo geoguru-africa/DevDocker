@@ -1,0 +1,34 @@
+# Environment configuration
+.env
+
+# Source code directories are in parent directory (not tracked here)
+# User clones their own forks to ../geoserver, ../geotools, ../geowebcache
+
+# Custom tools
+/server-tools/
+
+# SSH keys
+/ssh-keys/
+
+# Custom startup script
+startup-custom.sh
+
+# Docker volumes
+/data_dir/
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Property tests
+.hypothesis
+*.pyc

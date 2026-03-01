@@ -1,0 +1,76 @@
+#!/bin/bash
+# Example custom startup script for DevDocker
+# Copy this file to startup-custom.sh and customize for your needs
+# Mount it in docker-compose.yml to execute on container startup
+
+set -e
+
+echo "=== Running custom startup script ==="
+
+# Example 1: Install additional packages
+# Uncomment to install your preferred tools
+# apt-get update
+# apt-get install -y vim tmux htop jq curl
+
+# Example 2: Configure Git
+# Uncomment and customize with your details
+# git config --global user.name "Your Name"
+# git config --global user.email "your.email@example.com"
+# git config --global core.editor "vim"
+
+# Example 3: Install custom CLI tools
+# Uncomment to install a custom tool to /root/bin
+# mkdir -p /root/bin
+# curl -L https://example.com/tool -o /root/bin/my-tool
+# chmod +x /root/bin/my-tool
+
+# Example 4: Set up shell aliases
+# Uncomment to add custom aliases
+# cat >> /root/.bashrc <<'EOF'
+# alias gs='cd /workspace/geoserver'
+# alias gt='cd /workspace/geotools'
+# alias gwc='cd /workspace/geowebcache'
+# alias build='build-geoserver.sh'
+# alias start='start-geoserver.sh'
+# alias logs='tail -f /var/log/geoserver.log'
+# EOF
+
+# Example 5: Install Python packages for scripting
+# Uncomment to install Python tools
+# apt-get update
+# apt-get install -y python3-pip
+# pip3 install requests beautifulsoup4
+
+# Example 6: Configure Maven settings
+# Uncomment to add custom Maven configuration
+# cat >> /root/.m2/settings.xml <<'EOF'
+# <!-- Custom Maven settings -->
+# EOF
+
+# Example 7: Set up SSH config for Git
+# Uncomment to configure SSH for GitHub/GitLab
+# mkdir -p /root/.ssh
+# cat >> /root/.ssh/config <<'EOF'
+# Host github.com
+#   IdentityFile /root/.ssh/github_key
+#   StrictHostKeyChecking no
+# EOF
+
+# Example 8: Install database clients
+# Uncomment to install PostgreSQL client
+# apt-get update
+# apt-get install -y postgresql-client
+
+# Example 9: Set up custom environment variables
+# Uncomment to add environment variables
+# echo 'export MY_CUSTOM_VAR="value"' >> /etc/profile.d/custom-env.sh
+
+# Example 10: Download and install a specific tool version
+# Example: Install a specific version of Maven
+# MAVEN_VERSION=3.9.5
+# curl -L https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -o /tmp/maven.tar.gz
+# tar -xzf /tmp/maven.tar.gz -C /root/.local/
+# ln -sf /root/.local/apache-maven-${MAVEN_VERSION}/bin/mvn /root/bin/mvn
+# rm /tmp/maven.tar.gz
+
+echo "=== Custom startup script completed ==="

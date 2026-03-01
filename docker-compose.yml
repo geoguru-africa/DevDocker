@@ -1,0 +1,83 @@
+services:
+  devdocker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BASE_IMAGE: tomcat:10.1-jdk21-temurin-noble
+    image: devdocker:latest
+    container_name: devdocker
+    
+    ports:
+      - "${SSH_PORT:-2222}:22"           # SSH for IDE connectivity
+      - "${DEBUG_PORT:-5005}:5005"       # JDWP debug port
+      - "${GEOSERVER_PORT:-8080}:8080"   # GeoServer web interface
+      - "${DOCS_PORT:-8000}:8000"        # Documentation server (future)
+    
+    volumes:
+      # Named volumes (fast - Linux filesystem, persistent across container rebuilds)
+      - devdocker-home:/root                        # Persistent home directory (dotfiles, configs, tools)
+      - devdocker-workspace:/workspace              # Source code (git clone inside container)
+      - devdocker-maven-repo:/opt/maven-repo        # Maven cache (symlinked to /root/.m2/repository)
+      
+      # Optional: Use host Maven repo as fallback (uncomment to enable)
+      # Maven will check: 1) internal volume, 2) host repo (if mounted), 3) classroom mirror (if ENV set), 4) Maven Central
+      # Uncomment ONE of the lines below based on your OS:
+      # Linux/macOS:
+      # - ~/.m2/repository:/opt/maven-repo-host:ro
+      # Windows (adjust username):
+      # - C:/Users/YourUsername/.m2/repository:/opt/maven-repo-host:ro
+      
+      # Bind mounts (convenient host access)
+      - ../geoserver-data:/opt/geoserver/data_dir  # Data directory (easy host access)
+      - ./scripts:/opt/devdocker/scripts            # Scripts (edit on host, immediate effect)
+      - ./ssh-keys:/opt/devdocker/ssh-keys-source:ro  # SSH keys source (copied to /root/.ssh on startup)
+      
+      # Custom startup script (optional - see startup-custom.sh.example)
+      # Uncomment to enable custom initialization on container startup:
+      # - ./startup-custom.sh:/opt/devdocker/startup-custom.sh:ro
+    
+    environment:
+      # Logging configuration
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}  # Options: DEBUG, INFO, WARNING, ERROR
+      
+      # Timezone configuration
+      - TZ=${TZ:-Africa/Johannesburg}
+      
+      # GeoServer configuration
+      - GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
+      - JAVA_OPTS=-Xms512m -Xmx2g -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      
+      # Build configuration flags
+      - CUSTOM_GEOTOOLS=${CUSTOM_GEOTOOLS:-false}
+      - CUSTOM_GEOWEBCACHE=${CUSTOM_GEOWEBCACHE:-false}
+      
+      # Maven configuration (for classroom mode)
+      - MAVEN_MIRROR_URL=${MAVEN_MIRROR_URL:-}
+    
+    # Resource limits (adjust based on your system)
+    # Prevents container from consuming all host resources
+    deploy:
+      resources:
+        limits:
+          cpus: '6'      # Limit to 8 CPU cores (adjust to ~75% of your system)
+          memory: 8G     # Limit to 8GB RAM (adjust based on available memory)
+        reservations:
+          cpus: '2'      # Reserve minimum 2 cores
+          memory: 2G     # Reserve minimum 2GB
+    
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
+
+volumes:
+  # Named volumes for fast build performance (Linux filesystem)
+  devdocker-home:
+    name: devdocker-home
+  devdocker-workspace:
+    name: devdocker-workspace
+  devdocker-maven-repo:
+    name: devdocker-maven-repo
