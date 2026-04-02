@@ -9,10 +9,12 @@ FROM ${BASE_IMAGE}
 # Install build tools and SSH server
 RUN apt-get update && apt-get install -y \
     maven \
+    ant \
     git \
     openssh-server \
     inotify-tools \
     curl \
+    vim \
     nano \
     && rm -rf /var/lib/apt/lists/*
 
