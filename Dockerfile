@@ -1,20 +1,49 @@
 # GeoServer DevDocker Environment
 # Base image selection follows GeoServer/Docker pattern
+# For GeoServer 3.x: tomcat:11.0-jdk21-temurin-noble
 # For GeoServer 2.28.x: tomcat:9.0-jdk21-temurin-noble
 # For GeoServer 2.27.x: tomcat:9.0-jdk17-temurin-noble
 
-ARG BASE_IMAGE=tomcat:9.0-jdk21-temurin-noble
+ARG BASE_IMAGE=tomcat:11.0-jdk21-temurin-noble
 FROM ${BASE_IMAGE}
 
 # Install build tools and SSH server
 RUN apt-get update && apt-get install -y \
     maven \
+    ant \
     git \
     openssh-server \
     inotify-tools \
     curl \
+    vim \
     nano \
+    && apt-get upgrade -y \
+    && apt-get autoremove -y ssh-import-id \
     && rm -rf /var/lib/apt/lists/*
+
+# Security hardening: Replace vulnerable commons-io 2.11.0 with fixed version 2.14.0
+RUN curl -L https://repo1.maven.org/maven2/commons-io/commons-io/2.14.0/commons-io-2.14.0.jar \
+    -o /usr/share/java/commons-io-2.14.0.jar \
+    && rm -f /usr/share/java/commons-io.jar /usr/share/java/commons-io-2.11.0.jar \
+    && ln -s /usr/share/java/commons-io-2.14.0.jar /usr/share/java/commons-io.jar \
+    && rm -rf /usr/share/maven-repo/commons-io/commons-io/2.11.0 \
+    && mkdir -p /usr/share/maven-repo/commons-io/commons-io/2.14.0 \
+    && ln -s /usr/share/java/commons-io-2.14.0.jar /usr/share/maven-repo/commons-io/commons-io/2.14.0/commons-io-2.14.0.jar
+
+# Security hardening: Replace vulnerable commons-lang3 3.14.0 with fixed version 3.18.0
+RUN curl -L https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.18.0/commons-lang3-3.18.0.jar \
+    -o /usr/share/java/commons-lang3-3.18.0.jar \
+    && rm -f /usr/share/java/commons-lang3.jar /usr/share/java/commons-lang3-3.14.0.jar \
+    && ln -s /usr/share/java/commons-lang3-3.18.0.jar /usr/share/java/commons-lang3.jar \
+    && rm -rf /usr/share/maven-repo/org/apache/commons/commons-lang3/3.14.0 \
+    && mkdir -p /usr/share/maven-repo/org/apache/commons/commons-lang3/3.18.0 \
+    && ln -s /usr/share/java/commons-lang3-3.18.0.jar /usr/share/maven-repo/org/apache/commons/commons-lang3/3.18.0/commons-lang3-3.18.0.jar
+
+# Security hardening notes:
+# - apt-get upgrade addresses system package vulnerabilities
+# - Removed ssh-import-id and its dependencies (including vulnerable python3-cryptography)
+# - Manually upgraded commons-io from 2.11.0 to 2.14.0 to fix CVE-2024-47554
+# - Manually upgraded commons-lang3 from 3.14.0 to 3.18.0 to fix CVE-2025-48924
 
 # Configure environment variables
 ENV JAVA_HOME=/opt/java/openjdk
