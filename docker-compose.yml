@@ -1,11 +1,15 @@
 services:
   devdocker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        BASE_IMAGE: tomcat:10.1-jdk21-temurin-noble
-    image: devdocker:latest
+    # Use pre-built image from Docker Hub (recommended for users)
+    image: geoguruafrica/devdocker:latest
+    
+    # For development: uncomment to build locally instead of pulling from Docker Hub
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    #   args:
+    #     BASE_IMAGE: tomcat:10.1-jdk21-temurin-noble
+    
     container_name: devdocker
     
     ports:
@@ -29,8 +33,8 @@ services:
       # - C:/Users/YourUsername/.m2/repository:/opt/maven-repo-host:ro
       
       # Bind mounts (convenient host access)
-      - ../geoserver-data:/opt/geoserver/data_dir  # Data directory (easy host access)
-      - ./scripts:/opt/devdocker/scripts            # Scripts (edit on host, immediate effect)
+      - ../geoserver-data:/opt/geoserver/data_dir     # Data directory (easy host access)
+      - ./scripts:/opt/devdocker/scripts              # Scripts (edit on host, immediate effect)
       - ./ssh-keys:/opt/devdocker/ssh-keys-source:ro  # SSH keys source (copied to /root/.ssh on startup)
       
       # Custom startup script (optional - see startup-custom.sh.example)
@@ -75,9 +79,13 @@ networks:
 
 volumes:
   # Named volumes for fast build performance (Linux filesystem)
+  # Marked as external to allow reuse across different project contexts
   devdocker-home:
     name: devdocker-home
+    external: true
   devdocker-workspace:
     name: devdocker-workspace
+    external: true
   devdocker-maven-repo:
     name: devdocker-maven-repo
+    external: true

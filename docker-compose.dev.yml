@@ -1,0 +1,14 @@
+# docker-compose.dev.yml
+# Development override for building locally instead of using Docker Hub image
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml build (or up -d)
+
+services:
+  devdocker:
+    # Override to build locally
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BASE_IMAGE: tomcat:10.1-jdk21-temurin-noble
+    image: devdocker:latest
+#    image: geoguruafrica/devdocker:latest
