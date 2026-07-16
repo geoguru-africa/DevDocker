@@ -68,6 +68,35 @@ ssh-keygen -R "[localhost]:2222"
 
 Then connect normally - SSH will prompt you to accept the new host key.
 
+## Claude Desktop Users: Extra Step Required
+
+Claude Desktop's built-in SSH client does **not** read `~/.ssh/config` at all, so `StrictHostKeyChecking no` and `UserKnownHostsFile /dev/null` (Option 1 above) have no effect on it. Instead, before connecting it runs its own check equivalent to:
+
+```bash
+ssh-keygen -F "[localhost]:2222"
+```
+
+against your real `~/.ssh/known_hosts` file. If that lookup finds no entry (or a stale one from before a rebuild), Claude Desktop fails with:
+
+```
+Connection failed: Host denied (verification failed)
+```
+
+even though a terminal `ssh devdocker` connects fine.
+
+**Important:** if you used Option 1's `UserKnownHostsFile /dev/null`, your terminal client never writes anything to `~/.ssh/known_hosts`, so Claude Desktop will *never* find a valid entry there and will always fail — even on a fresh, correctly-running container. Removing/re-adding the connection in the Claude Desktop UI does not help either, since the trust check is keyed to the literal `host:port` (`localhost:2222`), not the connection name.
+
+### Fix
+
+After every container rebuild, refresh the real `known_hosts` file so Claude Desktop's lookup succeeds:
+
+```bash
+ssh-keygen -R "[localhost]:2222"
+ssh-keyscan -4 -p 2222 localhost >> ~/.ssh/known_hosts
+```
+
+Then retry the connection in Claude Desktop. (The `-4` avoids `ssh-keyscan` stalling on IPv6 `::1`, which can fail even though the IPv4 loopback is fine.)
+
 ## Security Considerations
 
 Disabling host key verification is appropriate for:
