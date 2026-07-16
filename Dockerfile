@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     vim \
     nano \
+    dos2unix \
     && apt-get upgrade -y \
     && apt-get autoremove -y ssh-import-id \
     && rm -rf /var/lib/apt/lists/*
@@ -74,7 +75,8 @@ RUN mkdir -p /workspace/geoserver \
 
 # Copy scripts
 COPY scripts/ /opt/devdocker/scripts/
-RUN chmod +x /opt/devdocker/scripts/*.sh && \
+RUN dos2unix /opt/devdocker/scripts/*.sh /opt/devdocker/scripts/lib/*.sh && \
+    chmod +x /opt/devdocker/scripts/*.sh && \
     ln -s /opt/devdocker/scripts/*.sh /usr/local/bin/
 
 # Expose ports
@@ -106,7 +108,8 @@ RUN echo 'cd /workspace 2>/dev/null || true' >> /root/.bashrc && \
 
 # Copy entrypoint script
 COPY entrypoint.sh /opt/devdocker/entrypoint.sh
-RUN chmod +x /opt/devdocker/entrypoint.sh
+RUN dos2unix /opt/devdocker/entrypoint.sh && \
+    chmod +x /opt/devdocker/entrypoint.sh
 
 ENTRYPOINT ["/opt/devdocker/entrypoint.sh"]
 CMD ["tail", "-f", "/dev/null"]
