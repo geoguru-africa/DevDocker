@@ -1,0 +1,9 @@
+# Enforce LF line endings for shell scripts to prevent Docker exec errors
+*.sh text eol=lf
+
+# Enforce LF for other script types
+*.bash text eol=lf
+*.py text eol=lf
+
+# Let Git handle line endings for text files automatically
+* text=auto

@@ -1,6 +1,9 @@
 # Environment configuration
 .env
 
+# Docker Compose overrides (personal configurations)
+docker-compose.override.yml
+
 # Source code directories are in parent directory (not tracked here)
 # User clones their own forks to ../geoserver, ../geotools, ../geowebcache
 
