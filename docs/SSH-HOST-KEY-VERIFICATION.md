@@ -97,6 +97,74 @@ ssh-keyscan -4 -p 2222 localhost >> ~/.ssh/known_hosts
 
 Then retry the connection in Claude Desktop. (The `-4` avoids `ssh-keyscan` stalling on IPv6 `::1`, which can fail even though the IPv4 loopback is fine.)
 
+## `choose_kex: unsupported KEX method sntrup761x25519-sha512@openssh.com`
+
+### Symptom
+
+```
+ssh-keyscan -4 -p 2222 localhost >> ~/.ssh/known_hosts
+# localhost:2222 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18
+choose_kex: unsupported KEX method sntrup761x25519-sha512@openssh.com
+```
+
+repeated for every retry, with nothing appended to `known_hosts`. This is a
+different failure from the host-key-changed warning above — it happens
+*before* any host key is even exchanged, so removing/re-adding entries in
+`known_hosts` will not fix it.
+
+### Root cause
+
+This is a **client-side** bug, not a container or network problem:
+
+- The container's SSH server is OpenSSH 9.6 (Ubuntu 24.04 base image), which
+  defaults to offering the post-quantum key exchange algorithm
+  `sntrup761x25519-sha512@openssh.com` as its top preference.
+- The `ssh-keyscan.exe` / `ssh.exe` bundled with Windows (the "OpenSSH
+  Client" optional feature, Win32-OpenSSH) is often an older build that
+  advertises support for that KEX method in its own proposal but doesn't
+  actually implement it. When the server picks it, the Windows client's own
+  `choose_kex()` fails to find an implementation for the algorithm it just
+  claimed to support, and the handshake aborts.
+- This affects `ssh-keyscan`, `ssh`, `scp`, and `sftp` equally — anything
+  using the Windows-bundled OpenSSH client against a modern OpenSSH 9.x
+  server.
+
+### Fix applied in this repo
+
+`config/sshd_config` pins `KexAlgorithms` to an explicit list that excludes
+`sntrup761x25519-sha512@openssh.com`:
+
+```
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256
+```
+
+Since the post-quantum KEX is never offered by the server, negotiation never
+reaches the code path that breaks on Windows. This fixes the problem for
+**every** client without any client-side changes, so it's the preferred
+fix — rebuild the image to pick it up:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+```
+
+### Alternative / client-side workarounds
+
+If you can't rebuild the container immediately:
+
+- **Use Git Bash's `ssh-keyscan`/`ssh`** instead of the Windows one — Git for
+  Windows ships a current OpenSSH build that negotiates the PQ KEX
+  correctly.
+- **Update the Windows OpenSSH Client** optional feature (Settings → Apps →
+  Optional Features → OpenSSH Client → Update).
+- **Force a classical KEX list from the client**, in `~/.ssh/config`:
+  ```
+  Host devdocker
+      KexAlgorithms -sntrup761x25519-sha512@openssh.com
+  ```
+  Note: `ssh` reads this; `ssh-keyscan` does **not** honor `~/.ssh/config`,
+  so this only helps regular `ssh`/`scp`/`sftp` connections, not the
+  keyscan step itself.
+
 ## Security Considerations
 
 Disabling host key verification is appropriate for:

@@ -64,11 +64,11 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '6'      # Limit to 8 CPU cores (adjust to ~75% of your system)
-          memory: 8G     # Limit to 8GB RAM (adjust based on available memory)
+          cpus: '${DOCKER_CPU_LIMIT:-6}'         # Adjust to ~75% of your system (or override via env)
+          memory: '${DOCKER_MEM_LIMIT:-8G}'      # Adjust based on available memory (or override via env)
         reservations:
-          cpus: '2'      # Reserve minimum 2 cores
-          memory: 2G     # Reserve minimum 2GB
+          cpus: '${DOCKER_CPU_RESERVATION:-2}'   # Reserve minimum cores
+          memory: '${DOCKER_MEM_RESERVATION:-2G}' # Reserve minimum memory
     
     networks:
       - network

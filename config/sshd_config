@@ -5,6 +5,14 @@
 Port 22
 Protocol 2
 
+# Key exchange algorithms
+# Excludes sntrup761x25519-sha512@openssh.com (post-quantum KEX, default in
+# OpenSSH 9.x): older/Windows OpenSSH clients (Win32-OpenSSH bundled with
+# Windows) advertise support for it but fail to actually negotiate it,
+# causing "choose_kex: unsupported KEX method" on ssh-keyscan/ssh/scp.
+# See docs/SSH-HOST-KEY-VERIFICATION.md for details.
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256
+
 # Authentication
 PubkeyAuthentication yes
 PasswordAuthentication no

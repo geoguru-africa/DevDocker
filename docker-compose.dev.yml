@@ -9,6 +9,6 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        BASE_IMAGE: tomcat:10.1-jdk21-temurin-noble
+        BASE_IMAGE: tomcat:11.0-jdk21-temurin-noble
     image: devdocker:latest
 #    image: geoguruafrica/devdocker:latest
