@@ -7,11 +7,11 @@ The DevDocker image is available on Docker Hub, allowing you to skip the build p
 Instead of building the image locally, you can pull the pre-built image:
 
 ```bash
-# Pull the latest version
+# Pull the latest version (recommended)
 docker pull geoguruafrica/devdocker:latest
 
-# Or pull a specific version
-docker pull geoguruafrica/devdocker:1.0.0
+# Or pull a specific version tag (see Tags link below for what's available)
+docker pull geoguruafrica/devdocker:<version>
 ```
 
 The `docker-compose.yml` file is already configured to use the Docker Hub image. When you run `docker-compose up -d`, it will automatically pull the image if it's not available locally.
@@ -41,7 +41,7 @@ To use a specific version, modify your `docker-compose.yml`:
 ```yaml
 services:
   devdocker:
-    image: geoguruafrica/devdocker:1.0.0  # Pin to version 1.0.0
+    image: geoguruafrica/devdocker:latest  # Or pin to a specific version tag
     # ... rest of configuration
 ```
 

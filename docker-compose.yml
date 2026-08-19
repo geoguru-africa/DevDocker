@@ -31,7 +31,7 @@ services:
       # - ~/.m2/repository:/opt/maven-repo-host:ro
       # Windows (adjust username):
       # - C:/Users/YourUsername/.m2/repository:/opt/maven-repo-host:ro
-      
+
       # Bind mounts (convenient host access)
       - ../geoserver-data:/opt/geoserver/data_dir     # Data directory (easy host access)
       - ./scripts:/opt/devdocker/scripts              # Scripts (edit on host, immediate effect)
