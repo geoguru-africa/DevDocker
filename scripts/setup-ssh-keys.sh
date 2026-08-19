@@ -72,7 +72,7 @@ if [ ${#pub_keys[@]} -gt 0 ]; then
         echo ""
         echo "Note: authorized_keys is only copied into the container at startup."
         echo "If devdocker is already running, restart it first so this key takes effect:"
-        echo "  docker compose up -d --force-recreate"
+        echo "  docker compose restart"
         exit 0
     fi
 fi
@@ -93,7 +93,7 @@ if [ -f "$SSH_DIR/id_rsa.pub" ]; then
         echo ""
         echo "Note: authorized_keys is only copied into the container at startup."
         echo "If devdocker is already running, restart it first so this key takes effect:"
-        echo "  docker compose up -d --force-recreate"
+        echo "  docker compose restart"
         exit 0
     fi
 fi
@@ -115,7 +115,7 @@ for key_type in id_ed25519 id_ecdsa id_dsa; do
             echo ""
             echo "Note: authorized_keys is only copied into the container at startup."
             echo "If devdocker is already running, restart it first so this key takes effect:"
-            echo "  docker compose up -d --force-recreate"
+            echo "  docker compose restart"
             exit 0
         fi
     fi
@@ -181,9 +181,7 @@ case $option in
         echo "Manual configuration:"
         echo "  1. Copy your public key to: $AUTHORIZED_KEYS_FILE"
         echo "  2. Ensure permissions: chmod 644 $AUTHORIZED_KEYS_FILE"
-        echo "  3. Start the container (use --force-recreate if devdocker is"
-        echo "     already running, since authorized_keys is only copied in"
-        echo "     at startup): docker compose up -d --force-recreate"
+        echo "  3. Restart the container: docker compose restart"
         exit 0
         ;;
     *)
@@ -194,8 +192,7 @@ esac
 
 echo ""
 echo "Next steps:"
-echo "  1. Start the container (use --force-recreate if devdocker is already"
-echo "     running, since authorized_keys is only copied in at startup):"
-echo "       docker compose up -d --force-recreate"
+echo "  1. Restart the container so the new key takes effect (authorized_keys"
+echo "     is only copied in at startup): docker compose restart"
 echo "  2. Test SSH connection: $CONNECT_CMD"
 echo ""
