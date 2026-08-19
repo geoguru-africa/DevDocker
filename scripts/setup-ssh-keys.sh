@@ -69,6 +69,10 @@ if [ ${#pub_keys[@]} -gt 0 ]; then
                 echo "  ssh -i ${selected_key%.pub} -p 2222 root@localhost"
                 ;;
         esac
+        echo ""
+        echo "Note: authorized_keys is only copied into the container at startup."
+        echo "If devdocker is already running, restart it first so this key takes effect:"
+        echo "  docker compose up -d --force-recreate"
         exit 0
     fi
 fi
@@ -86,6 +90,10 @@ if [ -f "$SSH_DIR/id_rsa.pub" ]; then
         echo ""
         echo "You can now connect to the container via SSH:"
         echo "  ssh -p 2222 root@localhost"
+        echo ""
+        echo "Note: authorized_keys is only copied into the container at startup."
+        echo "If devdocker is already running, restart it first so this key takes effect:"
+        echo "  docker compose up -d --force-recreate"
         exit 0
     fi
 fi
@@ -95,7 +103,7 @@ for key_type in id_ed25519 id_ecdsa id_dsa; do
     if [ -f "$SSH_DIR/${key_type}.pub" ]; then
         echo "Found existing SSH public key: $SSH_DIR/${key_type}.pub"
         read -p "Use this key for DevDocker? (y/n): " use_existing
-        
+
         if [ "$use_existing" = "y" ] || [ "$use_existing" = "Y" ]; then
             echo "Copying public key to authorized_keys..."
             cp "$SSH_DIR/${key_type}.pub" "$AUTHORIZED_KEYS_FILE"
@@ -104,6 +112,10 @@ for key_type in id_ed25519 id_ecdsa id_dsa; do
             echo ""
             echo "You can now connect to the container via SSH:"
             echo "  ssh -p 2222 root@localhost"
+            echo ""
+            echo "Note: authorized_keys is only copied into the container at startup."
+            echo "If devdocker is already running, restart it first so this key takes effect:"
+            echo "  docker compose up -d --force-recreate"
             exit 0
         fi
     fi
@@ -169,6 +181,9 @@ case $option in
         echo "Manual configuration:"
         echo "  1. Copy your public key to: $AUTHORIZED_KEYS_FILE"
         echo "  2. Ensure permissions: chmod 644 $AUTHORIZED_KEYS_FILE"
+        echo "  3. Start the container (use --force-recreate if devdocker is"
+        echo "     already running, since authorized_keys is only copied in"
+        echo "     at startup): docker compose up -d --force-recreate"
         exit 0
         ;;
     *)
@@ -179,6 +194,8 @@ esac
 
 echo ""
 echo "Next steps:"
-echo "  1. Start the container: docker compose up -d"
+echo "  1. Start the container (use --force-recreate if devdocker is already"
+echo "     running, since authorized_keys is only copied in at startup):"
+echo "       docker compose up -d --force-recreate"
 echo "  2. Test SSH connection: $CONNECT_CMD"
 echo ""
