@@ -44,6 +44,9 @@
    ```
 
 5. **Clone GeoServer inside the container**:
+
+   Please first see [Source Code Workflow](SOURCE-CODE-WORKFLOW.md) for forking, versioning, and multi-project (GeoTools/GeoWebCache) setup.
+
    ```bash
    # You're now inside the container at /workspace
    git clone https://github.com/YOUR_USERNAME/geoserver.git
@@ -51,8 +54,6 @@
    git remote add upstream https://github.com/geoserver/geoserver.git
    git fetch upstream --tags
    ```
-
-   See [Source Code Workflow](SOURCE-CODE-WORKFLOW.md) for forking, versioning, and multi-project (GeoTools/GeoWebCache) setup.
 
 6. **Build GeoServer**:
    ```bash

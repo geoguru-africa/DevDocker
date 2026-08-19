@@ -14,8 +14,9 @@ Before cloning, create a personal fork on GitHub:
 
 1. Navigate to https://github.com/geoserver/geoserver
 2. Click the "Fork" button in the top-right corner
-3. Select your GitHub account as the destination
-4. Wait for GitHub to create your fork
+3. Select your GitHub account as the destination (owner)
+4. For simplicity and consistency with this documentation, it is highly recommended that you keep the repository name the same as the upstream (e.g. `geoserver`)
+5. Wait for GitHub to create your fork
 
 ## Initial Setup
 
