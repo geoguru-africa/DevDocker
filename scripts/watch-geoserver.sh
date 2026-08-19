@@ -159,8 +159,13 @@ echo ""
 WAR_DIR=$(dirname "$GEOSERVER_WAR")
 WAR_FILE=$(basename "$GEOSERVER_WAR")
 
-# Create directory if it doesn't exist
-mkdir -p "$WAR_DIR"
+# Wait for the target directory to exist naturally (created by the first
+# Maven build). Eagerly mkdir-ing it here would leave an empty directory
+# tree inside /workspace/geoserver on a fresh volume, which blocks
+# `git clone` into the workspace (git requires an empty destination).
+while [ ! -d "$WAR_DIR" ]; do
+    sleep 5
+done
 
 # Watch for close_write events (file finished writing) and moved_to events (file moved into place)
 inotifywait -m -e close_write -e moved_to "$WAR_DIR" 2>/dev/null | while read -r directory event filename; do
