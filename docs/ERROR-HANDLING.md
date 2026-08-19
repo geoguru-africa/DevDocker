@@ -105,8 +105,8 @@ volumes:
   - devdocker-workspace:/workspace
 
 # Recreate volumes
-docker-compose down -v
-docker-compose up -d
+docker compose down -v
+docker compose up -d
 ```
 
 ### 2. Port Binding Conflicts
@@ -182,7 +182,7 @@ mkdir -p ssh-keys
 cat ~/.ssh/id_rsa.pub > ssh-keys/authorized_keys
 
 # Restart container
-docker-compose restart
+docker compose restart
 ```
 
 ### 5. Maven Build Failures
@@ -264,7 +264,7 @@ cd /workspace
 git clone https://github.com/your-username/geoserver.git
 
 # Restart container to initialize data directory
-docker-compose restart
+docker compose restart
 ```
 
 ### 8. Custom GeoTools/GeoWebCache Build Errors
@@ -369,32 +369,32 @@ curl http://localhost:8080/geoserver/web/
 
 ```bash
 # Restart container
-docker-compose restart
+docker compose restart
 
 # Rebuild container (preserves volumes)
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ### Hard Reset (Clean Slate)
 
 ```bash
 # Stop and remove container
-docker-compose down
+docker compose down
 
 # Remove volumes (WARNING: Deletes all data)
 docker volume rm devdocker-home devdocker-workspace devdocker-maven-repo
 
 # Rebuild from scratch
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ### Partial Reset (Maven Only)
 
 ```bash
 # Remove Maven repository volume only
-docker-compose down
+docker compose down
 docker volume rm devdocker-maven-repo
-docker-compose up -d
+docker compose up -d
 ```
 
 ## Getting Help
@@ -433,7 +433,7 @@ When reporting issues, include:
 
 1. Error messages from logs
 2. Docker version: `docker --version`
-3. Docker Compose version: `docker-compose --version`
+3. Docker Compose version: `docker compose --version`
 4. Host OS and version
 5. Steps to reproduce
 6. Diagnostic information (see above)

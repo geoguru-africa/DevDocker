@@ -14,7 +14,7 @@ docker pull geoguruafrica/devdocker:latest
 docker pull geoguruafrica/devdocker:<version>
 ```
 
-The `docker-compose.yml` file is already configured to use the Docker Hub image. When you run `docker-compose up -d`, it will automatically pull the image if it's not available locally.
+The `docker-compose.yml` file is already configured to use the Docker Hub image. When you run `docker compose up -d`, it will automatically pull the image if it's not available locally.
 
 ## Image Versioning Strategy
 
@@ -75,8 +75,8 @@ To update to the latest version:
 docker pull geoguruafrica/devdocker:latest
 
 # Restart your container
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 **Note**: Your data (source code, Maven cache, configurations) is stored in Docker volumes and will persist across image updates.
@@ -97,7 +97,7 @@ The easiest way to build locally is using the development override file:
 
 ```bash
 # Build and start with local image
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 
 # This will:
 # 1. Build the image from the local Dockerfile
@@ -118,7 +118,7 @@ docker build -t devdocker:latest .
 # To:     image: devdocker:latest
 
 # Start the container
-docker-compose up -d
+docker compose up -d
 ```
 
 ### When to Build Locally

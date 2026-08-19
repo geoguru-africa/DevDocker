@@ -132,7 +132,7 @@ CUSTOM_GEOTOOLS=true
 CUSTOM_GEOWEBCACHE=true
 ```
 
-Restart the container: `docker-compose restart`
+Restart the container: `docker compose restart`
 
 See [Configuration Reference](CONFIGURATION-REFERENCE.md#multi-project-development) for the full explanation of these flags.
 

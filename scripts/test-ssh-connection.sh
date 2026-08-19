@@ -15,7 +15,7 @@ echo ""
 # Check if container is running
 if ! docker ps | grep -q devdocker; then
     echo "ERROR: DevDocker container is not running"
-    echo "Start it with: docker-compose up -d"
+    echo "Start it with: docker compose up -d"
     exit 1
 fi
 
@@ -131,8 +131,8 @@ echo "=== SSH Connection Test: FAILED ==="
 echo ""
 echo "Troubleshooting steps:"
 echo "  1. Verify SSH keys are configured: ls -la ./ssh-keys/"
-echo "  2. Check container logs: docker-compose logs devdocker"
-echo "  3. Verify SSH server is running: docker-compose exec devdocker ps aux | grep sshd"
-echo "  4. Check port mapping: docker-compose ps"
+echo "  2. Check container logs: docker compose logs devdocker"
+echo "  3. Verify SSH server is running: docker compose exec devdocker ps aux | grep sshd"
+echo "  4. Check port mapping: docker compose ps"
 echo ""
 exit 1

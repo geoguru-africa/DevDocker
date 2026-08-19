@@ -29,7 +29,7 @@ JAVA_OPTS=-Xms2g -Xmx4g
 
 Restart:
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
 **2. Use Parallel Builds**
@@ -70,7 +70,7 @@ See [Configuration Reference: Architecture](../CONFIGURATION-REFERENCE.md#archit
 **Symptoms**:
 - Container takes over 2 minutes to start
 - SSH connection not available for a long time
-- `docker-compose up` hangs
+- `docker compose up` hangs
 
 **Diagnosis**:
 ```bash
@@ -91,7 +91,7 @@ If you have a custom startup script that's slow:
 mv startup-custom.sh startup-custom.sh.disabled
 
 # Restart
-docker-compose restart
+docker compose restart
 ```
 
 **2. Optimize Startup Script**
@@ -139,7 +139,7 @@ JAVA_OPTS=-Xms512m -Xmx1g
 
 Restart:
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
 **2. Limit Container Memory**

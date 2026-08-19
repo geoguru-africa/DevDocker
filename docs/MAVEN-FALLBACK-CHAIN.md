@@ -183,7 +183,7 @@ docker exec devdocker bash -c "cd /workspace/geoserver/src && mvn dependency:res
 **Solution**: 
 1. Verify the bind mount is uncommented in docker-compose.yml
 2. Verify `~/.m2/repository` exists on your host
-3. Restart container: `docker-compose restart`
+3. Restart container: `docker compose restart`
 
 ### Classroom Mirror Not Working
 
@@ -192,7 +192,7 @@ docker exec devdocker bash -c "cd /workspace/geoserver/src && mvn dependency:res
 **Solution**:
 1. Verify `MAVEN_MIRROR_URL` is set in `.env`
 2. Verify mirror server is accessible: `curl $MAVEN_MIRROR_URL`
-3. Restart container: `docker-compose restart`
+3. Restart container: `docker compose restart`
 4. Check logs: `docker logs devdocker | grep mirror`
 
 ### Slow First Build Despite Host Repo

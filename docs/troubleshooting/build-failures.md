@@ -49,9 +49,9 @@ mvn clean install -DskipTests
 docker exec devdocker java -version
 
 # If wrong version, rebuild container with correct base image
-docker-compose down
-docker-compose build --no-cache
-docker-compose up -d
+docker compose down
+docker compose build --no-cache
+docker compose up -d
 ```
 
 ### Maven Build Hangs or Takes Too Long
@@ -81,7 +81,7 @@ JAVA_OPTS=-Xms1g -Xmx4g
 
 Restart container:
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
 **2. Reduce Parallel Build Threads**
@@ -121,9 +121,9 @@ docker exec devdocker echo $PATH
 **1. Rebuild Container**
 ```bash
 # Scripts are added during image build
-docker-compose down
-docker-compose build --no-cache
-docker-compose up -d
+docker compose down
+docker compose build --no-cache
+docker compose up -d
 ```
 
 **2. Use Full Path**
@@ -181,7 +181,7 @@ CUSTOM_GEOWEBCACHE=false
 
 Restart:
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
 

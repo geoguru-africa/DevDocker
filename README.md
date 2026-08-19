@@ -10,7 +10,7 @@ This README is intentionally short. Detailed content has been split into focused
 git clone https://github.com/geoguru-africa/DevDocker.git
 cd DevDocker
 cp .env.example .env
-docker-compose up -d
+docker compose up -d
 ssh -p 2222 root@localhost
 ```
 
@@ -60,7 +60,7 @@ It detects the GeoServer branch and rebuilds with the expected base image.
 
 ### Is `docker-compose.override.yml` applied automatically?
 
-Yes. Docker Compose automatically merges `docker-compose.override.yml` when you run plain `docker-compose up` in the same directory.
+Yes. Docker Compose automatically merges `docker-compose.override.yml` when you run plain `docker compose up` in the same directory.
 
 ### When should I build locally?
 

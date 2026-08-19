@@ -58,7 +58,7 @@ The script will:
 
 3. **Restart the container**:
    ```bash
-   docker-compose restart
+   docker compose restart
    ```
 
 ### Testing SSH Connection
@@ -426,8 +426,8 @@ GEOSERVER_PORT=8081
 Then restart the container:
 
 ```bash
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 ## Troubleshooting
@@ -437,10 +437,10 @@ docker-compose up -d
 **Symptoms**: `Connection refused` when connecting via SSH
 
 **Solutions**:
-1. Verify container is running: `docker-compose ps`
-2. Check SSH server is running: `docker-compose exec devdocker ps aux | grep sshd`
-3. Verify port mapping: `docker-compose port devdocker 22`
-4. Check container logs: `docker-compose logs devdocker`
+1. Verify container is running: `docker compose ps`
+2. Check SSH server is running: `docker compose exec devdocker ps aux | grep sshd`
+3. Verify port mapping: `docker compose port devdocker 22`
+4. Check container logs: `docker compose logs devdocker`
 
 ### SSH Authentication Failed
 
@@ -458,8 +458,8 @@ docker-compose up -d
 
 **Solutions**:
 1. Verify GeoServer is running with debug enabled
-2. Check JAVA_OPTS includes debug agent: `docker-compose exec devdocker env | grep JAVA_OPTS`
-3. Verify port mapping: `docker-compose port devdocker 5005`
+2. Check JAVA_OPTS includes debug agent: `docker compose exec devdocker env | grep JAVA_OPTS`
+3. Verify port mapping: `docker compose port devdocker 5005`
 4. Check firewall settings on host machine
 
 ### Slow File Operations
@@ -477,8 +477,8 @@ docker-compose up -d
 **Symptoms**: IDE reports Java or Maven not found
 
 **Solutions**:
-1. Verify tools are installed: `docker-compose exec devdocker verify-tools.sh`
-2. Check PATH in SSH session: `docker-compose exec devdocker echo $PATH`
+1. Verify tools are installed: `docker compose exec devdocker verify-tools.sh`
+2. Check PATH in SSH session: `docker compose exec devdocker echo $PATH`
 3. Configure IDE to use absolute paths:
    - Java: `/opt/java/openjdk/bin/java`
    - Maven: `/usr/share/maven/bin/mvn`
@@ -514,7 +514,7 @@ For production-like testing, consider:
 
 ### Development Workflow
 
-1. **Start container**: `docker-compose up -d`
+1. **Start container**: `docker compose up -d`
 2. **Connect IDE**: Use SSH connection
 3. **Open workspace**: `/workspace/geoserver`
 4. **Make changes**: Edit code in IDE
