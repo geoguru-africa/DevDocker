@@ -56,8 +56,19 @@ if [ ${#pub_keys[@]} -gt 0 ]; then
         chmod 644 "$AUTHORIZED_KEYS_FILE"
         echo "✓ SSH key configured successfully!"
         echo ""
-        echo "You can now connect to the container via SSH:"
-        echo "  ssh -p 2222 root@localhost"
+        # Only default-named identity files (id_rsa, id_ed25519, ...) are tried
+        # automatically by ssh; an arbitrarily-named selected key needs -i.
+        selected_key_base="$(basename "$selected_key" .pub)"
+        case "$selected_key_base" in
+            id_rsa|id_ed25519|id_ecdsa|id_dsa)
+                echo "You can now connect to the container via SSH:"
+                echo "  ssh -p 2222 root@localhost"
+                ;;
+            *)
+                echo "You can now connect to the container via SSH:"
+                echo "  ssh -i ${selected_key%.pub} -p 2222 root@localhost"
+                ;;
+        esac
         exit 0
     fi
 fi
@@ -116,44 +127,48 @@ case $option in
         KEY_NAME="devdocker_rsa"
         mkdir -p "$SSH_DIR"
         ssh-keygen -t rsa -b 4096 -f "$SSH_DIR/$KEY_NAME" -N "" -C "devdocker@localhost"
-        
+
         echo "Copying public key to authorized_keys..."
         cp "$SSH_DIR/${KEY_NAME}.pub" "$AUTHORIZED_KEYS_FILE"
         chmod 644 "$AUTHORIZED_KEYS_FILE"
-        
+
         echo ""
         echo "✓ SSH key pair generated and configured!"
         echo ""
         echo "Private key: $SSH_DIR/$KEY_NAME"
         echo "Public key: $SSH_DIR/${KEY_NAME}.pub"
         echo ""
+        # devdocker_rsa is not a default SSH identity filename, so -i is required
+        CONNECT_CMD="ssh -i $SSH_DIR/$KEY_NAME -p 2222 root@localhost"
         echo "You can now connect to the container via SSH:"
-        echo "  ssh -i $SSH_DIR/$KEY_NAME -p 2222 root@localhost"
+        echo "  $CONNECT_CMD"
         ;;
     2)
         echo ""
         read -p "Enter path to your public key file: " pubkey_path
-        
+
         if [ ! -f "$pubkey_path" ]; then
             echo "ERROR: File not found: $pubkey_path"
             exit 1
         fi
-        
+
         echo "Copying public key to authorized_keys..."
         cp "$pubkey_path" "$AUTHORIZED_KEYS_FILE"
         chmod 644 "$AUTHORIZED_KEYS_FILE"
-        
+
         echo "✓ SSH key configured successfully!"
         echo ""
+        # The matching private key is conventionally the same path without .pub.
+        # Not guaranteed to be a default identity filename, so pass -i explicitly.
+        CONNECT_CMD="ssh -i ${pubkey_path%.pub} -p 2222 root@localhost"
         echo "You can now connect to the container via SSH:"
-        echo "  ssh -p 2222 root@localhost"
+        echo "  $CONNECT_CMD"
         ;;
     3)
         echo ""
         echo "Manual configuration:"
         echo "  1. Copy your public key to: $AUTHORIZED_KEYS_FILE"
         echo "  2. Ensure permissions: chmod 644 $AUTHORIZED_KEYS_FILE"
-        echo "  3. Uncomment the SSH keys volume mount in docker-compose.yml"
         exit 0
         ;;
     *)
@@ -164,7 +179,6 @@ esac
 
 echo ""
 echo "Next steps:"
-echo "  1. Uncomment the SSH keys volume mount in docker-compose.yml"
-echo "  2. Start the container: docker compose up -d"
-echo "  3. Test SSH connection: ssh -p 2222 root@localhost"
+echo "  1. Start the container: docker compose up -d"
+echo "  2. Test SSH connection: $CONNECT_CMD"
 echo ""
