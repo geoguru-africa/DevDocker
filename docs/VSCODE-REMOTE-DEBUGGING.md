@@ -182,10 +182,10 @@ Java extensions must be installed remotely to access the JDK and source code ins
    - Look for the official pack by Microsoft
    - Extension ID: `vscjava.vscode-java-pack`
 
-4. **Install in SSH: devdocker**:
-   - You'll see two buttons: "Install" and "Install in SSH: devdocker"
-   - Click **"Install in SSH: devdocker"** (the remote button)
-   - Wait for installation to complete (may take 2-3 minutes)
+4. **Install it**:
+   - The Extensions panel is already scoped to the remote (look for the **"SSH: devdocker"** section header), click the **Install** button, directly into that remote context.
+   - Often you won't need to search for it manually at all: opening the GeoServer folder (Step 5) triggers a popup — *"Do you want to install the recommended 'Extension Pack for Java' extension from Microsoft for this repository?"*. Clicking **Install** there does the same thing.
+   - Installation takes roughly 1-2 minutes depending on connection speed.
 
 5. **Included extensions**:
    The Extension Pack for Java includes:
@@ -203,10 +203,6 @@ Java extensions must be installed remotely to access the JDK and source code ins
 
 ### Troubleshooting Extension Installation
 
-**Problem: "Install in SSH: devdocker" button not visible**
-
-Solution: You're not connected to the remote container. Check bottom-left corner and reconnect if needed.
-
 **Problem: Java extension fails to activate**
 
 Solution:
@@ -223,7 +219,7 @@ Solution:
 
 ## Step 5: Open GeoServer Web App Module
 
-**IMPORTANT**: Do NOT open the entire `/workspace/geoserver` folder - it contains hundreds of Maven modules and will take 60+ minutes to index. Instead, open just the web/app module where most debugging happens.
+**IMPORTANT**: Do NOT open the entire `/workspace/geoserver` folder, if you are not using the `-warm` Docker image - it contains about 300 Maven modules and will take 60+ minutes to load and index. Instead, open just the web/app module where the `Start.java` file is found.
 
 1. **Open the web/app folder**:
    - File → Open Folder (`Ctrl+K Ctrl+O`)
@@ -245,6 +241,15 @@ Solution:
    - Hover over a class name - you should see documentation
    - IntelliSense should work when typing
 
+### Equivalent scoped folders for GeoTools and GeoWebCache
+
+The same "don't open the whole reactor" rule applies to the other two projects.
+
+- **GeoTools** (175 modules): open `/workspace/geotools/modules/library` instead. `library/main` is GeoTools' equivalent of `gs-main`, the module almost everything else depends on.
+- **GeoWebCache** (only 22 modules): opening the whole `/workspace/geowebcache/geowebcache` folder is likely fine, but for a tighter equivalent, use `/workspace/geowebcache/geowebcache/web`, the actual deployable webapp module.
+
+For any project, you can still open individual files from outside the scoped folder (`File → Open File`) and set breakpoints in them without importing their module — see "Setting Breakpoints in Other Modules" in Step 9 below; the same source-path-based JDWP matching applies regardless of which GeoTrio project you're debugging.
+
 ## Step 6: Configure Debug Launch Configuration
 
 VS Code needs a launch configuration to attach to the running GeoServer instance.
@@ -263,7 +268,7 @@ VS Code needs a launch configuration to attach to the running GeoServer instance
            "name": "Debug GeoServer (Remote)",
            "request": "attach",
            "hostName": "localhost",
-           "port": 5005,
+           "port": "5005",
            "projectName": "gs-main"
          }
        ]
@@ -446,6 +451,8 @@ Since you only have the web/app module open, you need to open files from other m
    - The line with the breakpoint will be highlighted
    - The Debug panel shows variables, call stack, and watch expressions
 
+**Wicket pages only construct once per session — a second hit may not re-trigger your breakpoint.** GeoServer's admin UI is built on Apache Wicket, which is stateful: visiting a page constructs a page object and stores it server-side, and the URL that loads includes that instance's ID (e.g. `?4`). Reloading that same URL — or even re-navigating to the bare, bookmarkable URL within the *same session* — redisplays the existing instance rather than rebuilding it, so constructor-level breakpoints (and any code that only runs during construction) won't fire again. To force a fresh hit: remove the `?4`, use an Incognito window or clear cookies for the site, or navigate to a different page and back first. Breakpoints in request-handling code that runs on every request (not just construction) aren't affected by this.
+
 ### Debug Controls
 
 Use the debug toolbar at the top of VS Code:
@@ -492,6 +499,17 @@ Hot code replacement works for:
 - **Variable values**: Changing local variable values during debugging
 - **Expression evaluation**: Testing code snippets in the debug console
 
+### Required setup (do this first — HCR silently does nothing without it)
+
+Add to `.vscode/settings.json` in the workspace:
+```json
+{
+  "java.autobuild.enabled": true,
+  "java.debug.settings.hotCodeReplace": "auto"
+}
+```
+Without `java.autobuild.enabled`, clicking Hot Code Replace (or waiting for "auto") fails with **"Cannot find any changed classes for hot replace!"**. `hotCodeReplace` itself defaults to `"manual"` (a toolbar button you must click); set it to `"auto"` if you want it to happen automatically on save once `autobuild` is on.
+
 ### Workflow for HCR
 
 1. **Pause at a breakpoint**
@@ -500,9 +518,10 @@ Hot code replacement works for:
    - Edit the method body (don't change signature)
    - Save the file (Ctrl+S)
 
-3. **VS Code recompiles**:
-   - The Java extension automatically recompiles the file
-   - New bytecode is sent to the JVM
+3. **VS Code recompiles, then pushes the change**:
+   - The Java extension recompiles the file automatically
+   - With `hotCodeReplace: "auto"` (and `autobuild` on), the new bytecode is pushed to the JVM automatically
+   - With the default `"manual"` setting, recompilation happens automatically but you must separately click the **Hot Code Replace** button in the Debug toolbar to actually push it — recompiling alone does *not* update the running JVM
 
 4. **Continue execution**:
    - Press F5 to continue
@@ -712,9 +731,19 @@ Then uninstall and reinstall "Language Support for Java" extension.
 
 #### Hot Code Replacement Fails
 
-**Symptoms**: "Hot code replace failed" message
+**Symptom A: "Cannot find any changed classes for hot replace!"** 
 
-**Solutions**:
+This means `java.autobuild.enabled` is off — without it, the debugger has no way to detect which `.class` files changed, so even manually clicking Hot Code Replace finds nothing to push, regardless of the `hotCodeReplace` setting. Fix: add both settings from "Required setup" above to `.vscode/settings.json`, then reload the window and retry. Ref: [microsoft/vscode-java-debug#1481](https://github.com/microsoft/vscode-java-debug/issues/1481)
+
+**Symptom B: "Hot code replace failed - Scheme change not implemented"**
+
+A genuine JDWP-level limitation, not a config issue — the JVM compared old and new bytecode and refused to redefine, likely from ECJ (JDT's compiler) producing structurally different bytecode than Maven's own build toolchain for the same source, even for a simple method-body edit. No local fix — do a full rebuild + restart (step 3 below).
+
+**Symptom C: fails silently, or the running behavior never changes, with no error at all**
+
+If the edited file is **not part of any imported project** in your workspace (e.g. you opened it via `File → Open File` from an unimported module), the Problems panel will show *"[filename] is a non-project file, only syntax errors are reported"* — JDT never compiled it in the first place, so there's nothing to hot-swap. Breakpoints still work here (JDWP source-path matching against already-loaded bytecode), but HCR does not. Import the module (Add Folder to Workspace) if you need to edit-and-hot-swap it, or just rebuild + restart for a one-off change.
+
+**General solutions**:
 1. **Check change type**:
    - Only method body changes are supported
    - Structural changes require restart
@@ -725,9 +754,9 @@ Then uninstall and reinstall "Language Support for Java" extension.
 
 3. **Restart debugging session**:
    - Stop debugger (Shift+F5)
-   - Rebuild: `mvn install -DskipTests -pl web/app -am`
+   - Rebuild the module that produces the **deployed artifact** (e.g. `web/app` for GeoServer's WAR), not just the module you edited — rebuilding a dependency alone updates the local `.m2` install but leaves the already-built WAR untouched: `mvn install -DskipTests -pl web/app -am`
    - Restart GeoServer
-   - Reattach debugger (F5)
+   - Reattach debugger (F5) — required after every GeoServer restart, since breakpoint definitions persist in VS Code but the JDWP connection does not survive a JVM restart
 
 #### Connection Drops During Debugging
 
