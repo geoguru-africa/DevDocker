@@ -32,7 +32,7 @@
 
 3. **Start the DevDocker environment**:
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
    This will automatically pull the pre-built image from [Docker Hub](https://hub.docker.com/r/geoguruafrica/devdocker) (`geoguruafrica/devdocker`) if it's not already available locally. See [Image Usage](IMAGE-USAGE.md) for versioning and local-build details.

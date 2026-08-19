@@ -28,8 +28,8 @@ netstat -ano | findstr :2222
 echo "SSH_PORT=2223" >> .env
 
 # Restart container
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 
 # Connect using new port
 ssh -p 2223 root@localhost
@@ -45,7 +45,7 @@ sudo kill <PID>
 Stop-Process -Id <PID> -Force
 
 # Restart DevDocker
-docker-compose restart
+docker compose restart
 ```
 
 ### JDWP Debug Port 5005 Already in Use
@@ -60,8 +60,8 @@ docker-compose restart
 echo "DEBUG_PORT=5006" >> .env
 
 # Restart container
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 
 # Update your IDE debug configuration to use port 5006
 ```
@@ -78,8 +78,8 @@ docker-compose up -d
 echo "GEOSERVER_PORT=8081" >> .env
 
 # Restart container
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 
 # Access GeoServer at http://localhost:8081/geoserver
 ```

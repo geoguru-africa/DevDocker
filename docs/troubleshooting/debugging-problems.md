@@ -48,8 +48,8 @@ ports:
 
 **4. Restart with Debug Enabled**
 ```bash
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ssh -p 2222 root@localhost
 start-geoserver.sh
 ```

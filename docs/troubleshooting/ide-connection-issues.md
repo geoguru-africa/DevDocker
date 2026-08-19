@@ -48,7 +48,7 @@ ssh -p 2222 root@localhost
 **3. Restart SSH Service**
 ```bash
 docker exec devdocker service ssh restart
-docker-compose restart
+docker compose restart
 ```
 
 **4. Check IDE Extension**

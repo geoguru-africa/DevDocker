@@ -165,6 +165,6 @@ esac
 echo ""
 echo "Next steps:"
 echo "  1. Uncomment the SSH keys volume mount in docker-compose.yml"
-echo "  2. Start the container: docker-compose up -d"
+echo "  2. Start the container: docker compose up -d"
 echo "  3. Test SSH connection: ssh -p 2222 root@localhost"
 echo ""

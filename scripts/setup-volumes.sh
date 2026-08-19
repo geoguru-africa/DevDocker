@@ -33,7 +33,7 @@ echo ""
 # Check if container is running
 if ! docker ps | grep -q devdocker; then
     log_error "Container 'devdocker' is not running"
-    log_info "Start the container with: docker-compose up -d"
+    log_info "Start the container with: docker compose up -d"
     exit 1
 fi
 

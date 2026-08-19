@@ -154,15 +154,15 @@ fi
 
 # Stop and remove existing container
 log_info "Stopping and removing existing container..."
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml down || log_warning "No existing container to remove"
+docker compose -f docker-compose.yml -f docker-compose.dev.yml down || log_warning "No existing container to remove"
 
 # Rebuild with correct base image
 log_info "Building new container with base image: $TOMCAT_IMAGE"
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml build --build-arg BASE_IMAGE="$TOMCAT_IMAGE"
+docker compose -f docker-compose.yml -f docker-compose.dev.yml build --build-arg BASE_IMAGE="$TOMCAT_IMAGE"
 
 # Start the new container
 log_info "Starting new container..."
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 
 # Wait for container to be ready
 log_info "Waiting for container to be ready..."
@@ -179,6 +179,6 @@ if docker ps | grep -q devdocker; then
     log_info "You can now connect via SSH on port 2222"
 else
     log_error "Container failed to start"
-    log_info "Check logs with: docker-compose logs"
+    log_info "Check logs with: docker compose logs"
     exit 1
 fi

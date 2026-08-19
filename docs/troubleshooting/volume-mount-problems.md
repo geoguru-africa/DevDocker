@@ -26,8 +26,8 @@ docker inspect devdocker | grep -A 10 Mounts
 **1. Volume Was Deleted**
 ```bash
 # Volume needs to be recreated
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 
 # Reconnect and clone repositories
 ssh -p 2222 root@localhost
@@ -102,7 +102,7 @@ git push origin your-branch
 If you pushed to GitHub:
 ```bash
 # Start new container
-docker-compose up -d
+docker compose up -d
 
 # Clone your fork
 ssh -p 2222 root@localhost
@@ -118,7 +118,7 @@ If you didn't push (volume still exists):
 docker volume ls | grep devdocker-workspace
 
 # If volume exists, start container and it will mount the volume
-docker-compose up -d
+docker compose up -d
 ssh -p 2222 root@localhost
 ls /workspace/geoserver  # Your work should be here
 ```

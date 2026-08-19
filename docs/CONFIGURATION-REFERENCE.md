@@ -45,8 +45,8 @@ CUSTOM_GEOWEBCACHE=false
 After modifying `.env`, restart the container for changes to take effect:
 
 ```bash
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 ## Multi-Project Development
@@ -129,7 +129,7 @@ To use local GeoTools/GeoWebCache builds:
 
 3. **Restart the container**:
    ```bash
-   docker-compose restart
+   docker compose restart
    ```
 
 4. **Build using the orchestration script**:
@@ -152,7 +152,7 @@ The environment includes:
 Verify tools are working:
 
 ```bash
-docker-compose exec devdocker verify-tools.sh
+docker compose exec devdocker verify-tools.sh
 ```
 
 ## Architecture

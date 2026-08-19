@@ -28,7 +28,7 @@ docker exec devdocker cat /root/.ssh/authorized_keys
 mkdir -p ssh-keys
 cp ~/.ssh/id_rsa.pub ssh-keys/authorized_keys
 chmod 644 ssh-keys/authorized_keys
-docker-compose restart
+docker compose restart
 ```
 
 **2. Wrong SSH Key**
@@ -115,22 +115,22 @@ docker exec devdocker service ssh status
 
 **1. Container Not Running**
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 **2. SSH Server Not Running**
 ```bash
 docker exec devdocker service ssh start
 # Or restart container
-docker-compose restart
+docker compose restart
 ```
 
 **3. Port Not Mapped Correctly**
 ```bash
 # Check docker-compose.yml has correct port mapping
 # Should have: "2222:22"
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 

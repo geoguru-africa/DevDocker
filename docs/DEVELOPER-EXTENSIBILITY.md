@@ -194,7 +194,7 @@ volumes:
 **Step 4: Restart Container**
 
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
 ### Startup Script Best Practices
@@ -329,7 +329,7 @@ apt-get update
 apt-get install -y vim tmux htop
 ```
 
-**Important**: Packages installed this way are **only persistent across container restarts**, not rebuilds. When you rebuild the container (`docker-compose build` or `docker-compose up --build`), all apt-get installed packages are lost because they're part of the container filesystem, not a volume.
+**Important**: Packages installed this way are **only persistent across container restarts**, not rebuilds. When you rebuild the container (`docker compose build` or `docker compose up --build`), all apt-get installed packages are lost because they're part of the container filesystem, not a volume.
 
 ### Making Package Installation Persistent
 
@@ -539,18 +539,18 @@ echo $PATH | grep "/root/bin"
 **Solution**: Verify mount and check logs:
 ```bash
 # Check if mounted
-docker-compose exec devdocker ls -la /opt/devdocker/startup-custom.sh
+docker compose exec devdocker ls -la /opt/devdocker/startup-custom.sh
 
 # Check logs
-docker-compose logs devdocker | grep "custom startup"
+docker compose logs devdocker | grep "custom startup"
 
 # Verify it's executable
-docker-compose exec devdocker test -x /opt/devdocker/startup-custom.sh && echo "Executable" || echo "Not executable"
+docker compose exec devdocker test -x /opt/devdocker/startup-custom.sh && echo "Executable" || echo "Not executable"
 ```
 
 ### Packages Lost After Rebuild
 
-**Problem**: Installed packages disappear after `docker-compose build`
+**Problem**: Installed packages disappear after `docker compose build`
 
 **Solution**: This is expected. Add installations to `startup-custom.sh`:
 ```bash
@@ -574,7 +574,7 @@ whoami  # Should show: root
 
 **Solution**: Check logs for error details:
 ```bash
-docker-compose logs devdocker | grep -A 10 "custom startup"
+docker compose logs devdocker | grep -A 10 "custom startup"
 ```
 
 Add error handling to your script:

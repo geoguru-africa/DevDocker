@@ -29,9 +29,9 @@ Error message: `chmod: changing permissions of '/root/.ssh': Read-only file syst
 Solution: The entrypoint script handles this automatically. If you see this error:
 ```bash
 # Rebuild the container
-docker-compose down
-docker-compose build --no-cache
-docker-compose up -d
+docker compose down
+docker compose build --no-cache
+docker compose up -d
 ```
 
 **2. Missing SSH Keys**
@@ -49,7 +49,7 @@ cp ~/.ssh/id_rsa.pub ssh-keys/authorized_keys
 chmod 644 ssh-keys/authorized_keys
 
 # Restart container
-docker-compose restart
+docker compose restart
 ```
 
 **3. Build Tool Verification Failed**
@@ -59,12 +59,12 @@ Error message: `ERROR: Maven not found` or `ERROR: Java version mismatch`
 Solution:
 ```bash
 # Rebuild the Docker image
-docker-compose down
-docker-compose build --no-cache
-docker-compose up -d
+docker compose down
+docker compose build --no-cache
+docker compose up -d
 
 # Verify tools after restart
-docker-compose exec devdocker verify-tools.sh
+docker compose exec devdocker verify-tools.sh
 ```
 
 
@@ -91,7 +91,7 @@ docker logs devdocker | grep -i ssh
 docker exec devdocker service ssh restart
 
 # If that doesn't work, restart the container
-docker-compose restart
+docker compose restart
 
 # Verify SSH is listening
 docker exec devdocker netstat -tlnp | grep :22

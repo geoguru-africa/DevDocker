@@ -47,7 +47,7 @@ GEOSERVER_DATA_DIR=/opt/geoserver/data_dir
 
 Restart container:
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
 ### Data Directory Corruption

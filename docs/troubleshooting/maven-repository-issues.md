@@ -42,13 +42,13 @@ docker exec devdocker bash -c "cd /workspace/geoserver/src && mvn clean install 
 **Option 3: Complete Repository Reset**
 ```bash
 # Stop container
-docker-compose down
+docker compose down
 
 # Remove Maven repository volume
 docker volume rm devdocker-maven-repo
 
 # Restart and rebuild
-docker-compose up -d
+docker compose up -d
 ssh -p 2222 root@localhost
 cd /workspace/geoserver/src
 mvn clean install -DskipTests
@@ -130,8 +130,8 @@ docker exec devdocker curl -I https://repo.maven.apache.org/maven2/
 ping repo.maven.apache.org
 
 # Restart Docker networking
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 **2. Configure Proxy (if behind corporate firewall)**

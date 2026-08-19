@@ -26,7 +26,7 @@ The entrypoint script automatically handles data directory initialization:
 Test the data directory setup:
 
 ```bash
-docker-compose exec devdocker test-data-directory.sh
+docker compose exec devdocker test-data-directory.sh
 ```
 
 This script verifies:
@@ -67,7 +67,7 @@ Make changes directly in the running container:
 
 ```bash
 # Connect to container
-docker-compose exec devdocker bash
+docker compose exec devdocker bash
 
 # Edit configuration
 vi /opt/geoserver/data_dir/global.xml
@@ -105,7 +105,7 @@ To reset to the default configuration:
 
 ```bash
 # Stop container
-docker-compose down
+docker compose down
 
 # Remove or rename the data directory on host
 cd ..
@@ -113,7 +113,7 @@ mv geoserver-data geoserver-data.backup
 
 # Restart container (will re-initialize from source)
 cd DevDocker
-docker-compose up -d
+docker compose up -d
 ```
 
 ## Backing Up the Data Directory
@@ -133,7 +133,7 @@ tar -czf geoserver-data-backup-$(date +%Y%m%d).tar.gz geoserver-data/
 ```bash
 # Stop container
 cd DevDocker
-docker-compose down
+docker compose down
 
 # Restore backup
 cd ..
@@ -141,7 +141,7 @@ tar -xzf geoserver-data-backup-20240115.tar.gz
 
 # Restart container
 cd DevDocker
-docker-compose up -d
+docker compose up -d
 ```
 
 ## Troubleshooting Data Directory
@@ -150,7 +150,7 @@ docker-compose up -d
 
 Solution: Check if GeoServer source is available in the container:
 ```bash
-docker-compose exec devdocker ls -la /workspace/geoserver/data/
+docker compose exec devdocker ls -la /workspace/geoserver/data/
 ```
 
 If empty, ensure GeoServer is cloned inside the container at `/workspace/geoserver`.
@@ -159,8 +159,8 @@ If empty, ensure GeoServer is cloned inside the container at `/workspace/geoserv
 
 Solution: Check volume permissions:
 ```bash
-docker-compose exec devdocker ls -la /opt/geoserver/
-docker-compose exec devdocker chmod -R 755 /opt/geoserver/data_dir
+docker compose exec devdocker ls -la /opt/geoserver/
+docker compose exec devdocker chmod -R 755 /opt/geoserver/data_dir
 ```
 
 **Problem: Changes not persisting**
@@ -172,8 +172,8 @@ docker volume inspect devdocker_geoserver-data
 
 If the volume doesn't exist, recreate it:
 ```bash
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 ```
 
 See also [Troubleshooting: Data Directory Issues](troubleshooting/data-directory-issues.md) for additional problems and fixes.

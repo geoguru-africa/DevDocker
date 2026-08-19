@@ -12,7 +12,7 @@ VS Code provides excellent support for remote Java debugging through:
 ## Prerequisites
 
 - VS Code installed on your host machine
-- DevDocker container running (`docker-compose up -d`)
+- DevDocker container running (`docker compose up -d`)
 - SSH keys configured (see [IDE Connectivity Guide](IDE-CONNECTIVITY.md))
 - GeoServer source code cloned in `/workspace/geoserver`
 
@@ -268,7 +268,7 @@ VS Code needs a launch configuration to attach to the running GeoServer instance
            "name": "Debug GeoServer (Remote)",
            "request": "attach",
            "hostName": "localhost",
-           "port": "5005",
+           "port": 5005,
            "projectName": "gs-main"
          }
        ]
@@ -389,7 +389,7 @@ Now attach VS Code's debugger to the running GeoServer instance.
 
 4. **If connection fails**:
    - Check GeoServer is running: Look for "Listening for transport dt_socket" in logs
-   - Verify port 5005 is exposed: `docker-compose port devdocker 5005`
+   - Verify port 5005 is exposed: `docker compose port devdocker 5005`
    - Check firewall settings on host machine
 
 ## Step 9: Set Breakpoints and Debug
@@ -617,19 +617,19 @@ Then uninstall and reinstall "Language Support for Java" extension.
 **Solutions**:
 1. **Verify GeoServer is running**:
    ```bash
-   docker-compose exec devdocker ps aux | grep java
+   docker compose exec devdocker ps aux | grep java
    ```
    You should see a Java process running.
 
 2. **Check JDWP is enabled**:
    ```bash
-   docker-compose exec devdocker bash -c "echo \$JAVA_OPTS"
+   docker compose exec devdocker bash -c "echo \$JAVA_OPTS"
    ```
    Should include: `-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005`
 
 3. **Verify port is exposed**:
    ```bash
-   docker-compose port devdocker 5005
+   docker compose port devdocker 5005
    ```
    Should show: `0.0.0.0:5005` or `127.0.0.1:5005`
 
@@ -765,12 +765,12 @@ If the edited file is **not part of any imported project** in your workspace (e.
 **Solutions**:
 1. **Check GeoServer is still running**:
    ```bash
-   docker-compose exec devdocker ps aux | grep java
+   docker compose exec devdocker ps aux | grep java
    ```
 
 2. **Check container is running**:
    ```bash
-   docker-compose ps
+   docker compose ps
    ```
 
 3. **Increase timeout**:
