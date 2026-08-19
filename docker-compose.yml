@@ -78,14 +78,14 @@ networks:
     driver: bridge
 
 volumes:
-  # Named volumes for fast build performance (Linux filesystem)
-  # Marked as external to allow reuse across different project contexts
+  # Named volumes for fast build performance (Linux filesystem).
+  # Fixed `name:` (not project-prefixed) so they're reused across different
+  # project directories referencing the same names. Compose auto-creates
+  # these on first `up` if missing, and `docker compose down` (no -v) never
+  # touches them — only `down -v` removes them.
   devdocker-home:
     name: devdocker-home
-    external: true
   devdocker-workspace:
     name: devdocker-workspace
-    external: true
   devdocker-maven-repo:
     name: devdocker-maven-repo
-    external: true

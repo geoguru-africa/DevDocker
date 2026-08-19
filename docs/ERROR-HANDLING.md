@@ -104,7 +104,9 @@ The container performs automatic checks on startup:
 volumes:
   - devdocker-workspace:/workspace
 
-# Recreate volumes
+# Recreate volumes (WARNING: deletes all data in devdocker-home,
+# devdocker-workspace, and devdocker-maven-repo — source code and
+# Maven cache included)
 docker compose down -v
 docker compose up -d
 ```
